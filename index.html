@@ -167,7 +167,7 @@ const PLAN = {
   /* finished wall thickness in inches, plaster included: 6 in and 4 in blocks */
   walls: { outer: 7, inner: 5 },
   /* heights in feet for the drawn front elevation */
-  elev: { plinth: 1.5, storey: 10, slab: 0.5, parapet: 3.5, stairRoom: 9, tank: 5.25,
+  elev: { plinth: 1.5, storey: 10, slab: 0.5, parapet: 3.5, stairRoom: 9, tank: 4.75,
           gate: 7, railing: 3.5, groundSill: 2.5, groundHead: 8, firstSill: 1.5, firstHead: 8.5 },
   floors: [
     { name: 'Ground floor', front: 0,
@@ -226,26 +226,26 @@ const PLAN = {
        parts of the terrace that only exist to fill the outline. */
     { name: 'Roof', front: -1, roof: true, levelText: "Roof level, 20' above the ground floor",
       rooms: [
-        /* the stair tower: X 0..11, Y 3..14 */
-        { n:'Side stair',   t:'stair',   x0:0,    y0:3,    x1:4,    y1:10.5, treads:10, dir:'-Y', lab:'DN' },
+        /* the stair tower: X 0..8.25, Y 6.5..14.  The lower half of the side flight
+           is still under the roof slab, so the tower starts where headroom runs out. */
+        { n:'Side stair',   t:'stair',   x0:0,    y0:6.5,  x1:4,    y1:10.5, treads:5, dir:'-Y', lab:'DN' },
         { n:'Landing',      t:'stair',   x0:0,    y0:10.5, x1:4,    y1:14 },
         { n:'Cross stair',  t:'stair',   x0:4,    y0:10.5, x1:8.25, y1:14,   treads:5, dir:'-X', lab:'DN' },
-        { n:'Top landing',  t:'stair',   x0:8.25, y0:10.5, x1:11,   y1:14 },
-        { n:'Store room',   t:'room',    x0:4,    y0:3,    x1:11,   y1:10.5 },
+        { n:'Cupboards',    t:'stair',   x0:4,    y0:6.5,  x1:8.25, y1:10.5 },
         /* the open roof round it */
         { n:'Roof terrace', t:'terrace', x0:0,    y0:14,   x1:24,   y1:36.5 },
-        { n:'t1', t:'terrace', quiet:'Roof terrace', x0:11,   y0:-1,   x1:24,   y1:14 },
-        { n:'t2', t:'terrace', quiet:'Roof terrace', x0:0,    y0:-1,   x1:11,   y1:3 },
+        { n:'t1', t:'terrace', quiet:'Roof terrace', x0:8.25, y0:-1,   x1:24,   y1:14 },
+        { n:'t2', t:'terrace', quiet:'Roof terrace', x0:0,    y0:-1,   x1:8.25, y1:6.5 },
         { n:'t3', t:'terrace', quiet:'Roof terrace', x0:0,    y0:36.5, x1:7,    y1:42 },
         { n:'t4', t:'terrace', quiet:'Roof terrace', x0:17,   y0:36.5, x1:24,   y1:42 },
         { n:'Air duct',     t:'open',    x0:7,    y0:36.5, x1:17,   y1:42 },
-        /* square tank on the tower roof, over its rear left corner; "clear" is the inside size */
-        { n:'Water tank (above)', t:'wet', x0:0,  y0:6.5,  x1:7.5,  y1:14, under:true,
-          where:'on top of the stair tower', clear:{ w:6.5, h:6.5 } }
+        /* the tank covers the whole tower, so its walls are the tower walls carried up;
+           "clear" is the inside size */
+        { n:'Water tank (above)', t:'wet', x0:0,  y0:6.5,  x1:8.25, y1:14, under:true,
+          where:'on top of the stair tower', clear:{ w:7.25, h:6.5 } }
       ],
       openings: [
-        { k:'door', ax:'v', at:11,   from:11,  to:13.5,  s:1,  j:['Top landing', 'Roof terrace'], label:'Door to the roof' },
-        { k:'door', ax:'h', at:10.5, from:8.5, to:10.75, s:-1, j:['Top landing', 'Store room'] }
+        { k:'door', ax:'v', at:8.25, from:11, to:13.5, s:1, j:['Cross stair', 'Roof terrace'], label:'Door to the roof' }
       ],
       fixtures: [] }
   ],
@@ -308,22 +308,19 @@ const PLAN = {
     'Entry':          { notes: ['The stair from the ground floor arrives here, in front of the main door.'] },
     'Roof terrace':   { ceil: 'Open to the sky', notes: ['Open roof, left empty, with a parapet wall all round and round the air duct.',
                                 'It wraps round the stair tower and the duct; the size shown is the main part behind the tower.',
-                                'Reached from the top landing of the stair through the door to the roof.'] },
-    'Top landing':    { ceil: "8' to 10' clear (10' is the most the Karachi regulations allow)",
-                        notes: ['Top of the stair, inside the stair tower.', 'One door leads out to the roof and one into the store room.'] },
-    'Store room':     { ceil: "8' to 10' clear",
-                        notes: ['Storage room inside the stair tower, entered from the top landing.',
-                                'The tower is 11 ft by 11 ft overall: the stair takes the left side and the rear, and this room fills the rest.',
-                                'Part of its roof is the floor of the water tank.',
-                                'Ask the society before building it: a room on the roof beside the stair may be counted as extra covered area or as another storey.'] },
-    'Side stair@2':   { notes: ['Seen from the roof, this flight goes down to the first floor.'] },
-    'Cross stair@2':  { notes: ['The stair arrives from the first floor at the top landing.'] },
+                                'Reached from the top of the stair through the door to the roof.'] },
+    'Cupboards':      { ceil: "8' to 10' clear (10' is the most the Karachi regulations allow)",
+                        notes: ['The inner corner of the stair tower, beside the stair. It is for built-in wooden cupboards, not a separate room.',
+                                'The cupboards open towards the top steps of the stair.',
+                                'Shelves or a wooden loft can also go over the side flight, where the stair is still low.'] },
+    'Side stair@2':   { notes: ['Seen from the roof, this flight goes down to the first floor. Its lower half is under the roof slab.'] },
+    'Cross stair@2':  { notes: ['The stair arrives from the first floor at the door to the roof.'] },
     'Air duct@2':     { notes: ['Fit the steel grill here, at roof level.'] },
-    'Water tank (above)': { ceil: "About 4'9\" inside: 4' of water and 9\" of air space",
+    'Water tank (above)': { ceil: "About 4'3\" inside: 3'6\" of water and 9\" of air space",
                         level: "On the roof slab of the stair tower, about 28' to 30' above the ground floor",
-                        notes: ['Reinforced concrete tank, 6 ft 6 in square inside, holding about 1,050 gallons.',
-                                'It sits over the rear left corner of the stair tower. Two of its walls are over the boundary wall and the wall line below; the other two need beams in the tower roof.',
-                                'About 12.5 tonnes when full: 4.8 tonnes of water and the rest concrete. The structural engineer must design for it from the foundation up.',
+                        notes: ['Reinforced concrete tank, about 7 ft 3 in by 6 ft 6 in inside, holding about 1,000 gallons.',
+                                'It covers the whole stair tower, so every tank wall is a tower wall carried straight up. No extra beams are needed for it.',
+                                'About 12.5 tonnes when full: 4.7 tonnes of water and the rest concrete. The structural engineer must design for it from the foundation up.',
                                 'Needs a 2 ft by 2 ft manhole with a raised edge and cover, an air vent with mesh, and a steel ladder up the tower wall for cleaning.',
                                 'Pipes: inlet from the motor with a float valve, outlet a few inches above the floor, washout at floor level, overflow near the top.',
                                 'Above the water motor, so the pipe from the motor runs almost straight up.',
@@ -340,8 +337,8 @@ const PLAN = {
     'Storage loft over each bath: the bath ceiling is at 7 ft 6 in, leaving about 1 ft 8 in above it. If the toilet platform is raised 6 in instead of 1 ft, the ceiling can drop to 7 ft and the loft grows to about 2 ft 2 in.',
     'Bath levels: the toilets are drawn on a platform about 1 ft above the bathing floor. Confirm with the plumber whether the bathing floor is at room level or sunk.',
     'Underground tank, 2,000 gallons, is under the car porch, built against the stair wall. The washroom drain runs under the stair along the boundary wall, about 3 ft from the tank. Use a sealed pipe encased in concrete along that stretch, and keep the manhole rim raised above the floor.',
-    'Overhead tank: concrete, 6 ft 6 in square, about 1,050 gallons, on top of the stair tower (see the Roof sheet). About 12.5 tonnes when full, so the structural engineer must design for it. Confirm with the society that a tank on the tower is allowed.',
-    'Stair tower: now 11 ft by 11 ft with a store room. Ask the society whether a store room on the roof is allowed; the Karachi regulations speak only of a tower over the stair.',
+    'Overhead tank: concrete, about 7 ft 3 in by 6 ft 6 in inside, about 1,000 gallons, covering the top of the stair tower (see the Roof sheet). About 12.5 tonnes when full, so the structural engineer must design for it. Confirm with the society that a tank on the tower is allowed.',
+    'Stair tower: 8 ft 3 in by 7 ft 6 in, just covering the stair. Storage is built-in wooden cupboards in its inner corner, not a separate room.',
     'The first floor has no washing area, because the court below it is open. A washing machine there would go on the balcony.',
     'Roof edge: the 3D picture shows the roof edge sloping away on the right. The plan and the drawn elevation use a parapet 3 ft 6 in high all round the roof instead. Ask the 3D designer to redo the picture to match.',
     'Lounge has no window. Its only opening to outside is the main door.',
@@ -715,7 +712,7 @@ function drawElevation() {
   if (tank) { o.push(bx(tank.x0, tank.x1, zS, zT, '#b9bcc0', edge));
     o.push(tx((tank.x0 + tank.x1) / 2, zS + E.tank / 2 + .5, 'Water', 8, INK)); o.push(tx((tank.x0 + tank.x1) / 2, zS + E.tank / 2 - .4, 'tank', 8, INK)); }
   o.push(bx(tw0, tw1, zR, zS, BEIGE, edge));                                // stair tower, set back from the front
-  o.push(tx((tw0 + tw1) / 2, zP + (zS - zP) / 2 - .2, 'Stair tower and store', 8, INK));
+  o.push(tx((tw0 + tw1) / 2, zP + (zS - zP) / 2 - .2, 'Stair tower', 8, INK));
 
   /* the house */
   o.push(bx(0, W, 0, zR, WALL, edge));
@@ -873,10 +870,10 @@ function renderSum() {
     const s = floorStats(fi);
     if (F.roof) {
       html += `<div class="sum" style="margin-bottom:10px"><div><b>${esc(F.name)}</b><span>${ft(PLAN.plot.w)} × ${ft(PLAN.plot.d - F.front)}</span></div>` +
-        `<div><span>Stair tower with store room</span><b>${r0(s.by.stair + s.by.room)} sq ft</b></div>` +
+        `<div><span>Stair tower</span><b>${r0(s.by.stair + s.by.room)} sq ft</b></div>` +
         `<div><span>Open terrace</span><b>${r0(s.by.terrace)} sq ft</b></div>` +
         `<div><span>Air duct</span><b>${r0(s.by.open)} sq ft</b></div>` +
-        `<div><span>Water tank, on top of the stair tower</span><b>1,050 gallons</b></div>` +
+        `<div><span>Water tank, on top of the stair tower</span><b>1,000 gallons</b></div>` +
         ((s.gap > 0.5 || s.over > 0.5) ? `<div class="chk bad">Check: the roof outline has a gap or an overlap.</div>` : '') + `</div>`;
       return;
     }
