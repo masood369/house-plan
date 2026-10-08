@@ -228,8 +228,10 @@ const PLAN = {
         ...BATH_A, ...BATH_B, ...FURNITURE(0),
         { r:'WC', k:'commode', x0:1.4, y0:9.71, x1:2.9, y1:11.98, f:'+Y' },
         { r:'WC', k:'basin',   x0:0.6, y0:12.9, x1:1.6, y1:13.79, f:'-Y' },
-        /* 2,000 imperial gallons is about 321 cu ft: 7 x 8 ft with 5 ft 9 in of water */
-        { r:'Car porch',  k:'tank',  x0:5.05, y0:1,    x1:12.05, y1:9, mh:{ x0:5.05, y0:3.8, x1:7.05, y1:5.8 }, label:'Underground water tank', sub:"2,000 gal · 7' × 8' · 6'6\" deep" },
+        /* 3,000 imperial gallons is about 482 cu ft: 7 ft x 11 ft 3 in with 6 ft 1 in of water.
+           The tank is already as wide as the porch allows, so it is made longer instead. */
+        { r:'Car porch',  k:'tank',  x0:5.05, y0:1.5,  x1:12.05, y1:12.75, mh:{ x0:5.05, y0:3.8, x1:7.05, y1:5.8 },
+          label:'Underground water tank', sub:"3,000 gal · 7' × 11'3\" · 6'10\" deep" },
         { r:'Car porch',  k:'basin', x0:4.29, y0:9.6,  x1:5.4,  y1:10.85, f:'+X' },
         { r:'Open court', k:'wash',  x0:7.3,  y0:36.3, x1:10.5, y1:41.4, label:'Washing area' },
         { r:'Open court', k:'basin', x0:13.2, y0:40.4, x1:14.7, y1:41.42, f:'-Y' }
@@ -322,7 +324,9 @@ const PLAN = {
                         notes: ['The back 3 ft 6 in is under the cross flight of the stair, so a car\'s bonnet goes under it.',
                                 'Mehran, Alto and Cultus fit by length. A parked car blocks either the WC door or the main door.',
                                 'The 8 ft lane makes turning in difficult.',
-                                'Underground water tank below the floor: 2,000 gallons, about 7 ft by 8 ft and 6 ft 6 in deep.',
+                                'Underground water tank below the floor: 3,000 gallons, 7 ft by 11 ft 3 in inside and about 6 ft 10 in deep. Dug 1 ft deeper it holds 3,500 gallons.',
+                                'It cannot be 9 ft wide: the porch is 8 ft 5 in between the stair wall and the drawing room wall, and the tank already fills that width. The extra capacity comes from making it longer, running back under the stair.',
+                                'A car parks on top of it, so the tank roof slab has to be designed to carry a car.',
                                 'Its manhole is on the stair side of the porch, just past the inner stair door and next to the water motor hatch, so the pipe from the tank to the motor is short.',
                                 'The tank is built against the stair wall, so the manhole is about 9 in from it. That 9 in is the tank\'s own concrete wall.',
                                 'A car parked to the right leaves the manhole clear.',
@@ -375,7 +379,8 @@ const PLAN = {
   notes: [
     'Storage loft over each bath: the bath ceiling is at 7 ft 6 in, leaving about 1 ft 8 in above it. If the toilet platform is raised 6 in instead of 1 ft, the ceiling can drop to 7 ft and the loft grows to about 2 ft 2 in.',
     'Bath levels: the toilets are drawn on a platform about 1 ft above the bathing floor. Confirm with the plumber whether the bathing floor is at room level or sunk.',
-    'Underground tank, 2,000 gallons, is under the car porch, built against the stair wall. The washroom drain runs under the stair along the boundary wall, about 3 ft from the tank. Use a sealed pipe encased in concrete along that stretch, and keep the manhole rim raised above the floor.',
+    'Underground tank, 3,000 gallons (3,500 if dug 1 ft deeper), is under the car porch, built against the stair wall. The washroom drain runs under the stair along the boundary wall, about 3 ft from the tank. Use a sealed pipe encased in concrete along that stretch, and keep the manhole rim raised above the floor.',
+    'Underground tank depth: about 7 ft for 3,000 gallons or 8 ft for 3,500, dug right beside the stair, drawing room and front wall foundations. The structural engineer must check this and design the tank roof for a parked car.',
     'Overhead tank: concrete, about 7 ft 3 in by 6 ft 6 in inside, about 1,000 gallons, covering the top of the stair tower (see the Roof sheet). About 12.5 tonnes when full, so the structural engineer must design for it. Confirm with the society that a tank on the tower is allowed.',
     'Stair tower: 8 ft 3 in by 7 ft 6 in, just covering the stair. Storage is built-in wooden cupboards in its inner corner, not a separate room.',
     'The first floor has no washing area, because the court below it is open. A washing machine there would go on the balcony.',
@@ -926,7 +931,7 @@ function renderRoom() {
   const doors = ops.filter(p => p.k !== 'win' && p.k !== 'rail').map(p => describe(p, r.n));
   const wins  = ops.filter(p => p.k === 'win' || p.k === 'rail').map(p => describe(p, r.n));
   const FXN = { commode:'Commode', asian:'Asian toilet', basin:'Basin', shower:'Shower', platform:'Raised platform for the toilets',
-                tank:'Underground water tank, 2,000 gallons', wash:'Washing area with space for a washing machine',
+                tank:'Underground water tank, 3,000 gallons', wash:'Washing area with space for a washing machine',
                 bed:"Double bed, 5' × 6'6\"", side:'Side tables', wardrobe:'Wardrobe, 2 ft deep', dresser:'Dressing table with stool',
                 sofa:'Sofa', chair:'Armchair', table:'Low table', dining:'Dining table for four', tv:'TV unit',
                 counter:'Counters, 2 ft deep', sink:'Sink', hob:'Hob', fridge:'Fridge' };
