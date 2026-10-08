@@ -121,14 +121,13 @@ const STAIR = (front) => [
 ];
 const BACK = (front, court) => [
   { n:'Drawing room', t:'room', x0:13, y0:front, x1:24, y1:14 },
-  { n:'Kitchen',      t:'room', x0:0,  y0:14,    x1:8,  y1:22.25 },
-  { n:'Wardrobe',     t:'room', x0:0,  y0:22.25, x1:8,  y1:24.5 },
+  { n:'Kitchen',      t:'room', x0:0,  y0:14,    x1:8,  y1:24.5 },
   { n:'Lounge',       t:'room', x0:8,  y0:14,    x1:24, y1:24.5 },
-  { n:'Bedroom 1',    t:'room', x0:0,  y0:24.5,  x1:12, y1:36.5 },
-  { n:'Bedroom 2',    t:'room', x0:12, y0:24.5,  x1:24, y1:36.5 },
-  { n:'Bath A',       t:'wet',  x0:0,  y0:36.5,  x1:7,  y1:42 },
-  { n:court,          t:'open', x0:7,  y0:36.5,  x1:17, y1:42 },
-  { n:'Bath B',       t:'wet',  x0:17, y0:36.5,  x1:24, y1:42 }
+  { n:'Bedroom 1',    t:'room', x0:0,  y0:24.5,  x1:12, y1:36 },
+  { n:'Bedroom 2',    t:'room', x0:12, y0:24.5,  x1:24, y1:36 },
+  { n:'Bath A',       t:'wet',  x0:0,  y0:36,  x1:7,  y1:42 },
+  { n:court,          t:'open', x0:7,  y0:36,  x1:17, y1:42 },
+  { n:'Bath B',       t:'wet',  x0:17, y0:36,  x1:24, y1:42 }
 ];
 /* openings that are the same on both floors; P = porch on ground, balcony above */
 const INNER = (front, P, E, court, under) => [
@@ -138,28 +137,62 @@ const INNER = (front, P, E, court, under) => [
   { k:'door', ax:'v', at:13,   from:3,    to:6,    s:1,  j:[P, 'Drawing room'] },
   { k:'door', ax:'h', at:14,   from:14,   to:17,   s:-1, j:['Drawing room', 'Lounge'] },
   { k:'open', ax:'v', at:8,    from:14.5, to:20,         j:['Kitchen', 'Lounge'], label:'Counter opening' },
-  { k:'open', ax:'h', at:24.5, from:0.6,  to:7.6,        j:['Wardrobe', 'Bedroom 1'], label:'Open front' },
   { k:'door', ax:'h', at:24.5, from:8.5,  to:11.5, s:1,  j:['Lounge', 'Bedroom 1'] },
   { k:'door', ax:'h', at:24.5, from:12.5, to:15.5, s:1,  j:['Lounge', 'Bedroom 2'] },
-  { k:'door', ax:'h', at:36.5, from:4.25, to:6.5,  s:1,  j:['Bedroom 1', 'Bath A'] },
+  { k:'door', ax:'h', at:36, from:0.7,  to:2.95, s:1,  j:['Bedroom 1', 'Bath A'] },     // in the corner, against the boundary wall
   { k:'win',  ax:'h', at:front,from:15,   to:22,         j:['Drawing room', 'the lane'] },
-  { k:'win',  ax:'h', at:36.5, from:8,    to:11,         j:['Bedroom 1', court] },
+  { k:'win',  ax:'h', at:36, from:8,    to:11,         j:['Bedroom 1', court] },
   { k:'win',  ax:'v', at:7,    from:39.6, to:41,         j:['Bath A', court], label:'Ventilator' }
 ];
 /* toilets, basin and shower.  f = the way the fixture faces */
 const BATH_A = [
   { r:'Bath A', k:'platform', x0:0.58, y0:39.0,  x1:6.71, y1:41.42 },
-  { r:'Bath A', k:'commode',  x0:0.9,  y0:39.15, x1:2.4,  y1:41.42, f:'-Y' },
-  { r:'Bath A', k:'asian',    x0:3.7,  y0:39.3,  x1:5.7,  y1:41.3,  f:'-Y' },
-  { r:'Bath A', k:'basin',    x0:2.9,  y0:36.71, x1:4.15, y1:37.75, f:'+Y' },
-  { r:'Bath A', k:'shower',   x0:0.58, y0:36.71, x1:2.8,  y1:39.0 }
+  { r:'Bath A', k:'asian',    x0:1.0,  y0:39.3,  x1:3.0,  y1:41.3,  f:'-Y' },
+  { r:'Bath A', k:'commode',  x0:4.9,  y0:39.15, x1:6.4,  y1:41.42, f:'-Y' },
+  { r:'Bath A', k:'basin',    x0:3.1,  y0:36.21, x1:4.35, y1:37.25, f:'+Y' },
+  { r:'Bath A', k:'shower',   x0:4.5,  y0:36.21, x1:6.71, y1:39.0 }
 ];
 const BATH_B = [
   { r:'Bath B', k:'platform', x0:17.29, y0:39.0,  x1:23.42, y1:41.42 },
   { r:'Bath B', k:'asian',    x0:18.3,  y0:39.3,  x1:20.3,  y1:41.3,  f:'-Y' },
   { r:'Bath B', k:'commode',  x0:21.6,  y0:39.15, x1:23.1,  y1:41.42, f:'-Y' },
-  { r:'Bath B', k:'basin',    x0:19.85, y0:36.71, x1:21.1,  y1:37.75, f:'+Y' },
-  { r:'Bath B', k:'shower',   x0:21.2,  y0:36.71, x1:23.42, y1:39.0 }
+  { r:'Bath B', k:'basin',    x0:19.85, y0:36.21, x1:21.1,  y1:37.25, f:'+Y' },
+  { r:'Bath B', k:'shower',   x0:21.2,  y0:36.21, x1:23.42, y1:39.0 }
+];
+
+/* furniture.  f = the way the piece faces (a bed's foot, a sofa's seat, a wardrobe's doors).
+   "front" is the Y of the front wall, which is 1 ft further out on the first floor. */
+const FURNITURE = (front) => [
+  /* Bedroom 1: bed on the right wall, wardrobe on the left wall clear of the bath door */
+  { r:'Bedroom 1', k:'bed',      x0:5.29,  y0:28.6,  x1:11.79, y1:33.6,  f:'-X' },
+  { r:'Bedroom 1', k:'side',     x0:10.3,  y0:27.4,  x1:11.79, y1:28.6 },
+  { r:'Bedroom 1', k:'side',     x0:10.3,  y0:33.6,  x1:11.79, y1:34.8 },
+  { r:'Bedroom 1', k:'wardrobe', x0:0.58,  y0:25.0,  x1:2.58,  y1:31.0,  f:'+X' },
+  { r:'Bedroom 1', k:'dresser',  x0:3.6,   y0:24.71, x1:7.1,   y1:26.21, f:'+Y' },
+  /* Bedroom 2: bed on the right wall, wardrobe between the two doors on the left wall */
+  { r:'Bedroom 2', k:'bed',      x0:16.92, y0:28.3,  x1:23.42, y1:33.3,  f:'-X' },
+  { r:'Bedroom 2', k:'side',     x0:21.9,  y0:27.1,  x1:23.42, y1:28.3 },
+  { r:'Bedroom 2', k:'side',     x0:21.9,  y0:33.3,  x1:23.42, y1:34.5 },
+  { r:'Bedroom 2', k:'wardrobe', x0:12.21, y0:28.0,  x1:14.21, y1:33.0,  f:'+X' },
+  { r:'Bedroom 2', k:'dresser',  x0:16.2,  y0:24.71, x1:19.7,  y1:26.21, f:'+Y' },
+  /* Lounge: sofas and TV on the right, a four-seat dining table near the kitchen */
+  { r:'Lounge', k:'sofa',   x0:20.92, y0:16.5,  x1:23.42, y1:23.0,  f:'-X' },
+  { r:'Lounge', k:'sofa',   x0:16.2,  y0:21.79, x1:20.7,  y1:24.29, f:'-Y' },
+  { r:'Lounge', k:'table',  x0:17.4,  y0:18.3,  x1:19.9,  y1:20.3 },
+  { r:'Lounge', k:'tv',     x0:17.5,  y0:14.29, x1:21.5,  y1:15.4,  f:'+Y' },
+  { r:'Lounge', k:'dining', x0:10.2,  y0:18.4,  x1:14.2,  y1:21.0 },
+  /* Drawing room: three-seat sofa on the right wall, two-seat under the window, one chair */
+  { r:'Drawing room', k:'sofa',  x0:20.92, y0:4.5,          x1:23.42, y1:11.0,         f:'-X' },
+  { r:'Drawing room', k:'sofa',  x0:16.5,  y0:front + 0.58, x1:20.5,  y1:front + 3.08, f:'+Y' },
+  { r:'Drawing room', k:'chair', x0:13.4,  y0:7.0,          x1:15.9,  y1:9.5,          f:'+X' },
+  { r:'Drawing room', k:'table', x0:17.0,  y0:6.3,          x1:19.5,  y1:8.8 },
+  /* Kitchen: counters on three sides, sink under the window, fridge in the rear corner */
+  { r:'Kitchen', k:'counter', x0:0.58, y0:14.29, x1:2.58, y1:24.29 },
+  { r:'Kitchen', k:'counter', x0:2.58, y0:14.29, x1:7.79, y1:16.29, nl:1 },
+  { r:'Kitchen', k:'counter', x0:2.58, y0:22.29, x1:5.4,  y1:24.29, nl:1 },
+  { r:'Kitchen', k:'sink',    x0:5.2,  y0:14.45, x1:7.2,  y1:16.1,  f:'+Y' },
+  { r:'Kitchen', k:'hob',     x0:0.75, y0:18.2,  x1:2.4,  y1:20.4,  f:'+X' },
+  { r:'Kitchen', k:'fridge',  x0:5.4,  y0:21.9,  x1:7.79, y1:24.29, f:'-Y' }
 ];
 
 const PLAN = {
@@ -186,19 +219,19 @@ const PLAN = {
         { k:'door', ax:'v', at:4,    from:7,     to:9.5,   s:1, j:['Car porch', 'the space under the stair'], label:'Low hatch to the water motor' },
         { k:'door', ax:'v', at:4,    from:11,    to:13.25, s:1, j:['WC', 'Car porch'], label:'Door, opens outward' },
         ...INNER(0, 'Car porch', 'Car porch', 'Open court', 'Car porch'),
-        { k:'door', ax:'v', at:17,   from:36.75, to:38.95, s:1,  j:['Open court', 'Bath B'] },
-        { k:'door', ax:'h', at:36.5, from:14,    to:16.5,  s:-1, j:['Bedroom 2', 'Open court'] },
-        { k:'win',  ax:'h', at:36.5, from:12.4,  to:13.7,        j:['Bedroom 2', 'Open court'] },
+        { k:'door', ax:'v', at:17,   from:36.25, to:38.45, s:1,  j:['Open court', 'Bath B'] },
+        { k:'door', ax:'h', at:36, from:14,    to:16.5,  s:-1, j:['Bedroom 2', 'Open court'] },
+        { k:'win',  ax:'h', at:36, from:12.4,  to:13.7,        j:['Bedroom 2', 'Open court'] },
         { k:'win',  ax:'v', at:17,   from:39.9,  to:41.1,        j:['Bath B', 'Open court'], label:'Ventilator' }
       ],
       fixtures: [
-        ...BATH_A, ...BATH_B,
+        ...BATH_A, ...BATH_B, ...FURNITURE(0),
         { r:'WC', k:'commode', x0:1.4, y0:9.71, x1:2.9, y1:11.98, f:'+Y' },
         { r:'WC', k:'basin',   x0:0.6, y0:12.9, x1:1.6, y1:13.79, f:'-Y' },
         /* 2,000 imperial gallons is about 321 cu ft: 7 x 8 ft with 5 ft 9 in of water */
         { r:'Car porch',  k:'tank',  x0:5.05, y0:1,    x1:12.05, y1:9, mh:{ x0:5.05, y0:3.8, x1:7.05, y1:5.8 }, label:'Underground water tank', sub:"2,000 gal · 7' × 8' · 6'6\" deep" },
         { r:'Car porch',  k:'basin', x0:4.29, y0:9.6,  x1:5.4,  y1:10.85, f:'+X' },
-        { r:'Open court', k:'wash',  x0:7.3,  y0:36.8, x1:10.5, y1:41.4, label:'Washing area' },
+        { r:'Open court', k:'wash',  x0:7.3,  y0:36.3, x1:10.5, y1:41.4, label:'Washing area' },
         { r:'Open court', k:'basin', x0:13.2, y0:40.4, x1:14.7, y1:41.42, f:'-Y' }
       ] },
 
@@ -215,11 +248,11 @@ const PLAN = {
         { k:'open', ax:'v', at:8.25, from:10.5, to:14,   j:['Cross stair', 'Entry'], label:'Stair arrives' },
         { k:'open', ax:'h', at:10.5, from:8.25, to:13,   j:['Balcony', 'Entry'] },
         ...INNER(-1, 'Balcony', 'Entry', 'Air duct', 'Cross stair'),
-        { k:'door', ax:'h', at:36.5, from:17.5, to:19.75, s:1, j:['Bedroom 2', 'Bath B'] },
-        { k:'win',  ax:'h', at:36.5, from:13,   to:16,         j:['Bedroom 2', 'Air duct'] },
+        { k:'door', ax:'h', at:36, from:17.5, to:19.75, s:1, j:['Bedroom 2', 'Bath B'] },
+        { k:'win',  ax:'h', at:36, from:13,   to:16,         j:['Bedroom 2', 'Air duct'] },
         { k:'win',  ax:'v', at:17,   from:39.6, to:41,         j:['Bath B', 'Air duct'], label:'Ventilator' }
       ],
-      fixtures: [ ...BATH_A, ...BATH_B ] },
+      fixtures: [ ...BATH_A, ...BATH_B, ...FURNITURE(-1) ] },
 
     /* The roof: an open terrace, the stair room standing on it, and the
        overhead tank sitting on top of the stair room.  "quiet" pieces are
@@ -233,12 +266,12 @@ const PLAN = {
         { n:'Cross stair',  t:'stair',   x0:4,    y0:10.5, x1:8.25, y1:14,   treads:5, dir:'-X', lab:'DN' },
         { n:'Cupboards',    t:'stair',   x0:4,    y0:6.5,  x1:8.25, y1:10.5 },
         /* the open roof round it */
-        { n:'Roof terrace', t:'terrace', x0:0,    y0:14,   x1:24,   y1:36.5 },
+        { n:'Roof terrace', t:'terrace', x0:0,    y0:14,   x1:24,   y1:36 },
         { n:'t1', t:'terrace', quiet:'Roof terrace', x0:8.25, y0:-1,   x1:24,   y1:14 },
         { n:'t2', t:'terrace', quiet:'Roof terrace', x0:0,    y0:-1,   x1:8.25, y1:6.5 },
-        { n:'t3', t:'terrace', quiet:'Roof terrace', x0:0,    y0:36.5, x1:7,    y1:42 },
-        { n:'t4', t:'terrace', quiet:'Roof terrace', x0:17,   y0:36.5, x1:24,   y1:42 },
-        { n:'Air duct',     t:'open',    x0:7,    y0:36.5, x1:17,   y1:42 },
+        { n:'t3', t:'terrace', quiet:'Roof terrace', x0:0,    y0:36, x1:7,    y1:42 },
+        { n:'t4', t:'terrace', quiet:'Roof terrace', x0:17,   y0:36, x1:24,   y1:42 },
+        { n:'Air duct',     t:'open',    x0:7,    y0:36, x1:17,   y1:42 },
         /* the tank covers the whole tower, so its walls are the tower walls carried up;
            "clear" is the inside size */
         { n:'Water tank (above)', t:'wet', x0:0,  y0:6.5,  x1:8.25, y1:14, under:true,
@@ -253,18 +286,24 @@ const PLAN = {
   /* what is said about each room on its details sheet.  A key ending in
      "@0" or "@1" applies to that floor only. */
   details: {
-    'Drawing room':   { notes: ['Guest room at the front, entered from the porch and from the lounge.'] },
+    'Drawing room':   { notes: ['Guest room at the front, entered from the porch and from the lounge.',
+                                'Seats six: a three-seat sofa on the right wall, a two-seat sofa under the window and one armchair.'] },
     'Drawing room@0': { notes: ['Front window 7 ft wide, onto the lane.'] },
     'Drawing room@1': { notes: ['Projects 1 ft over the lane, so it is a foot deeper than the one below.',
                                 'This is the grey box with the tall window on the elevation.'] },
-    'Kitchen':        { notes: ['Open to the lounge through a counter opening 5 ft 6 in wide.',
+    'Kitchen':        { notes: ['Counters on three sides with the sink under the window, the hob on the long left counter and the fridge in the rear corner. The clear floor between them is about 5 ft 2 in by 6 ft.',
+                                'Runs the full depth from the porch wall to the bedroom wall, with no wardrobe recess behind it.',
+                                'Open to the lounge through a counter opening 5 ft 6 in wide.',
                                 'The window gives air and borrowed light from the covered space under the stair, not direct daylight.',
                                 'Allow for an exhaust fan or duct.'] },
-    'Wardrobe':       { notes: ['Built-in wardrobe recess for Bedroom 1, open to the bedroom along its full front.'] },
-    'Lounge':         { notes: ['No window. The only opening to outside is the main door.',
+    'Lounge':         { notes: ['Sofas and the TV are on the right. A four-seat dining table is near the kitchen, leaving about 2 ft to pass behind it to the bedroom doors.',
+                                'No window. The only opening to outside is the main door.',
                                 'Both bedroom doors, the drawing room door and the kitchen counter open off this room.'] },
-    'Bedroom 1':      { notes: ['Wardrobe recess 7 ft 3 in wide and 2 ft 1 in deep on the lounge side.',
-                                'Attached Bath A. The hatch to the storage loft over the bath is on this wall, above the bath door.'] },
+    'Bedroom 1':      { notes: ['Bed on the right wall, a 6 ft wardrobe on the left wall and the dressing table on the front wall. About 2 ft 8 in between the bed and the wardrobe.',
+                                'No built-in wardrobe recess: that space is now part of the kitchen, so the wardrobe stands inside the room.',
+                                'Attached Bath A. Its door is in the left corner, against the boundary wall, which leaves the rest of the rear wall free for furniture.',
+                                'The hatch to the storage loft over the bath is on the rear wall, above the bath door.'] },
+    'Bedroom 2':      { notes: ['Bed on the right wall, a 5 ft wardrobe in the middle of the left wall and the dressing table on the front wall. About 2 ft 8 in between the bed and the wardrobe.'] },
     'Bedroom 2@0':    { notes: ['Door onto the open court. Bath B is reached through the court, in the open air.',
                                 'Small window onto the court beside the door.',
                                 'The hatch to the storage loft over Bath B is on this wall.'] },
@@ -330,7 +369,7 @@ const PLAN = {
     'Commode and Asian toilet side by side on the back wall, on a platform raised about 1 ft.',
     'Bathing area in front at the lower level, with the shower at the end away from the door.',
     'Small wall-hung basin beside the door.',
-    "Storage loft above: about 6'2\" × 4'9\" and 1'8\" high, reached by a hatch from the bedroom.",
+    "Storage loft above: about 6'2\" × 5'3\" and 1'8\" high, reached by a hatch from the bedroom.",
     'Ventilator window onto the court, kept below the loft.'
   ],
   notes: [
@@ -427,6 +466,76 @@ const FILL = { room:'#fdfbf6', wet:'#e2eef2', stair:'#f3f3f0', porch:'#efebe2',
                balcony:'#f5efdf', terrace:'#eeeee6', open:'url(#hatch)' };
 const INK = '#22262c', DIM = '#9a5b23', PAPER = '#ffffff', FONT = 'Segoe UI, Roboto, Arial, sans-serif';
 const PX = x => ML + x * S, PY = y => MT + (PLAN.plot.d - y) * S;
+
+/* Furniture symbols.  Drawn in a local frame w wide and d deep, with the back
+   of the piece at the top; the caller rotates it to face the right way.
+   Returns the label to show in a close-up. */
+function furniture(x, w, d, g) {
+  const LN = '#7d7466', BODY = '#f6f1e8', SOFT = '#e9e0d0', WOOD = '#e2d5bf';
+  const R = (x0, y0, ww, hh, fill, rx, sw) =>
+    `<rect x="${x0}" y="${y0}" width="${ww}" height="${hh}" rx="${rx || 0}" fill="${fill}" stroke="${LN}" stroke-width="${sw || .9}"/>`;
+  const L = (x1, y1, x2, y2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${LN}" stroke-width=".7"/>`;
+  switch (x.k) {
+    case 'bed':
+      g.push(R(-w / 2, -d / 2, w, d, BODY, 2));
+      g.push(R(-w / 2 + 2, -d / 2 + d * .3, w - 4, d * .7 - 2, SOFT, 2, .6));           // blanket
+      for (const sx of [-1, 1]) g.push(R(sx * w * .24 - w * .19, -d / 2 + d * .06, w * .38, d * .17, '#ffffff', 3, .7));
+      return 'Bed';
+    case 'side':
+      g.push(R(-w / 2, -d / 2, w, d, WOOD, 1.5, .7));
+      return '';
+    case 'wardrobe': {
+      g.push(R(-w / 2, -d / 2, w, d, WOOD, 1));
+      g.push(L(-w / 2, d / 2 - d * .14, w / 2, d / 2 - d * .14));
+      const n = Math.max(2, Math.round(w / S / 1.5));
+      for (let k = 1; k < n; k++) g.push(L(-w / 2 + w * k / n, -d / 2, -w / 2 + w * k / n, d / 2));
+      return 'Wardrobe'; }
+    case 'dresser':
+      g.push(R(-w / 2, -d / 2, w, d, WOOD, 1.5));
+      g.push(`<line x1="${-w * .3}" y1="${-d / 2 + 1.6}" x2="${w * .3}" y2="${-d / 2 + 1.6}" stroke="${LN}" stroke-width="2"/>`);   // mirror
+      g.push(`<circle cx="0" cy="${d / 2 + S * .85}" r="${S * .5}" fill="${SOFT}" stroke="${LN}" stroke-width=".7"/>`);                 // stool
+      return 'Dressing table';
+    case 'sofa': case 'chair': {
+      const arm = S * .38, back = d * .28;
+      g.push(R(-w / 2, -d / 2, w, d, SOFT, 3));
+      g.push(R(-w / 2, -d / 2, w, back, BODY, 3, .7));
+      g.push(R(-w / 2, -d / 2, arm, d, BODY, 3, .7) + R(w / 2 - arm, -d / 2, arm, d, BODY, 3, .7));
+      const n = x.k === 'chair' ? 1 : Math.max(1, Math.round((w - 2 * arm) / (S * 2.1)));
+      for (let k = 1; k < n; k++) { const px = -w / 2 + arm + (w - 2 * arm) * k / n; g.push(L(px, -d / 2 + back, px, d / 2)); }
+      return x.k === 'chair' ? 'Chair' : 'Sofa'; }
+    case 'table':
+      g.push(R(-w / 2, -d / 2, w, d, WOOD, 3));
+      return 'Table';
+    case 'dining': {
+      const n = Math.max(1, Math.round(w / (S * 2))), cw = S * 1.25, ch = S * 1.15;
+      for (let k = 0; k < n; k++) { const px = -w / 2 + w * (k + .5) / n - cw / 2;
+        g.push(R(px, -d / 2 - ch - 1, cw, ch, SOFT, 2.5, .7) + R(px, d / 2 + 1, cw, ch, SOFT, 2.5, .7)); }
+      g.push(R(-w / 2, -d / 2, w, d, WOOD, 3));
+      return 'Dining table'; }
+    case 'tv':
+      g.push(R(-w / 2, -d / 2, w, d, WOOD, 1.5));
+      g.push(`<rect x="${-w * .36}" y="${-d / 2 + 1}" width="${w * .72}" height="2.4" fill="#3a3d42"/>`);
+      return 'TV';
+    case 'counter':
+      g.push(R(-w / 2, -d / 2, w, d, '#dcd5c8', 0, .8));
+      return x.nl ? '' : 'Counter';
+    case 'sink':
+      g.push(R(-w / 2, -d / 2, w, d, '#f4f6f7', 2));
+      g.push(R(-w * .36, -d * .26, w * .72, d * .62, '#ffffff', 4, .7));
+      g.push(`<circle cx="0" cy="${-d * .38}" r="1.1" fill="${LN}"/>`);
+      return 'Sink';
+    case 'hob':
+      g.push(R(-w / 2, -d / 2, w, d, '#44474d', 2));
+      for (const sx of [-1, 1]) for (const sy of [-1, 1])
+        g.push(`<circle cx="${sx * w * .23}" cy="${sy * d * .23}" r="${Math.min(w, d) * .14}" fill="none" stroke="#d9dbde" stroke-width=".8"/>`);
+      return 'Hob';
+    case 'fridge':
+      g.push(R(-w / 2, -d / 2, w, d, '#f4f6f7', 2));
+      g.push(L(-w / 2, d / 2 - d * .12, w / 2, d / 2 - d * .12));
+      return 'Fridge';
+  }
+  return '';
+}
 
 function drawFloor(fi, opt) {
   opt = opt || {};
@@ -594,6 +703,8 @@ function drawFloor(fi, opt) {
       g.push(`<ellipse cx="0" cy="${d * .06}" rx="${w * .33}" ry="${d * .3}" fill="none" stroke="${FX}" stroke-width=".7"/>`);
       g.push(`<circle cx="0" cy="${-d * .34}" r="1" fill="${FX}"/>`);
       name = 'Basin';
+    } else {
+      name = furniture(x, w, d, g);
     }
     o.push(`<g transform="translate(${cx} ${cy}) rotate(${ang})" pointer-events="none">${g.join('')}</g>`);
     if (close && name) o.push(text(cx, cy + 2.5 * fs, name, x.k === 'basin' ? 6 : 7, FX, `pointer-events="none" ${halo}`));
@@ -621,7 +732,7 @@ function drawFloor(fi, opt) {
     o.push(text(cx, cy + lift + (showSize ? -1 : 3) * fs, q.r.n, fz, INK, style));
     if (showSize) {
       const c = clearOf(F, q.r);
-      o.push(text(cx, cy + lift + (fz + 1) * fs, ft(c.w) + ' × ' + ft(c.h), fz - 1.5, '#667080', `pointer-events="none" ${rot} ${hasFx ? halo : ''}`));
+      o.push(text(cx, cy + lift + (fz + 1) * fs, ft(c.w) + ' × ' + ft(c.h), fz - 1.5, '#667080', `pointer-events="none" ${rot} ${anyFx ? halo : ''}`));
     }
   }
 
@@ -815,8 +926,11 @@ function renderRoom() {
   const doors = ops.filter(p => p.k !== 'win' && p.k !== 'rail').map(p => describe(p, r.n));
   const wins  = ops.filter(p => p.k === 'win' || p.k === 'rail').map(p => describe(p, r.n));
   const FXN = { commode:'Commode', asian:'Asian toilet', basin:'Basin', shower:'Shower', platform:'Raised platform for the toilets',
-                tank:'Underground water tank, 2,000 gallons', wash:'Washing area with space for a washing machine' };
-  const fx = (F.fixtures || []).filter(x => x.r === r.n).map(x => FXN[x.k]);
+                tank:'Underground water tank, 2,000 gallons', wash:'Washing area with space for a washing machine',
+                bed:"Double bed, 5' × 6'6\"", side:'Side tables', wardrobe:'Wardrobe, 2 ft deep', dresser:'Dressing table with stool',
+                sofa:'Sofa', chair:'Armchair', table:'Low table', dining:'Dining table for four', tv:'TV unit',
+                counter:'Counters, 2 ft deep', sink:'Sink', hob:'Hob', fridge:'Fridge' };
+  const fx = [...new Set((F.fixtures || []).filter(x => x.r === r.n).map(x => FXN[x.k]).filter(Boolean))];
   const ul = a => a.length ? `<ul>${a.map(s => `<li>${esc(s)}</li>`).join('')}</ul>` : '<span style="color:#8b9099">None</span>';
   const row = (k, v) => `<tr><th>${k}</th><td>${v}</td></tr>`;
   return `<div class="sheet wide"><div class="detail">` +
@@ -830,7 +944,7 @@ function renderRoom() {
       row('Floor level', esc(info.level)) +
       row('Doors and openings', ul(doors)) +
       row('Windows', ul(wins)) +
-      (fx.length ? row('Fittings', ul(fx)) : '') +
+      (fx.length ? row('Fittings and furniture', ul(fx)) : '') +
       (info.notes.length ? row('Notes', ul(info.notes)) : '') +
     `</table></div></div></div>`;
 }
