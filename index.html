@@ -62,6 +62,23 @@ ul.notes li{margin-bottom:5px}
 .facts tr:first-child th,.facts tr:first-child td{border-top:0}
 .facts ul{margin:0;padding-left:16px}
 .facts li{margin-bottom:3px}
+/* ---- phones ---- */
+@media (max-width:640px){
+  header{position:static;padding:8px 10px;gap:8px}
+  header h1{flex:1;order:1;font-size:14px}
+  header h1 small{display:none}
+  #side{min-width:0;flex-basis:100%}
+  .detail .facts{min-width:0}
+  header .spacer{display:none}
+  #png{order:2;padding:5px 9px;font-size:12px}
+  #views{order:3;flex:1 1 100%}
+  #views button{flex:1 1 auto;white-space:nowrap;padding:8px 4px;font-size:12.5px}
+  main{padding:10px;gap:10px}
+  .sheet{padding:6px}
+  .sheet.wide{padding:10px}
+  .detail{gap:12px}
+  .rl button{padding:7px 11px;font-size:13px}
+}
 </style>
 </head>
 <body>
@@ -334,7 +351,11 @@ function clearOf(F, r) {                           // size inside the walls
    DRAWING  (plain SVG, presentation attributes only so PNG export works)
    opt.detail = room index: draw a close-up of that room, cropped to opt.crop
    ========================================================================== */
-const S = 15, ML = 50, MR = 84, MT = 34, MB = 74;
+const S = 15, MT = 34, MB = 74;
+/* On a phone the side dimension lines are dropped so the plan can fill the
+   screen, and the labels are drawn larger. */
+let ML = 50, MR = 84, compact = false;
+function setCompact(c) { compact = c; ML = c ? 12 : 50; MR = c ? 12 : 84; }
 const FILL = { room:'#fdfbf6', wet:'#e2eef2', stair:'#f3f3f0', porch:'#efebe2',
                balcony:'#f5efdf', open:'url(#hatch)' };
 const INK = '#22262c', DIM = '#9a5b23', PAPER = '#ffffff', FONT = 'Segoe UI, Roboto, Arial, sans-serif';
@@ -343,7 +364,7 @@ const PX = x => ML + x * S, PY = y => MT + (PLAN.plot.d - y) * S;
 function drawFloor(fi, opt) {
   opt = opt || {};
   const F = PLAN.floors[fi], W = PLAN.plot.w, D = PLAN.plot.d;
-  const close = opt.detail !== undefined, fs = opt.fs || 1;
+  const close = opt.detail !== undefined, fs = opt.fs || (compact ? 1.2 : 1);
   const lowest = Math.min(0, ...PLAN.floors.map(f => f.front));   // keep floors aligned
   const X = PX, Y = PY;
   const width = ML + W * S + MR, height = MT + (D - lowest) * S + MB;
@@ -364,12 +385,12 @@ function drawFloor(fi, opt) {
          `<path d="M0 0 L10 5 L0 10 z" fill="#7a808a"/></marker></defs>`);
   o.push(`<rect x="-200" y="-200" width="${width + 400}" height="${height + 400}" fill="${PAPER}"/>`);
   if (!close) {
-    o.push(`<text x="${ML}" y="20" font-size="14" font-weight="700" fill="${INK}" font-family="${FONT}">${esc(F.name.toUpperCase())}</text>`);
-    o.push(`<text x="${width - 8}" y="20" font-size="8.5" fill="#8b9099" text-anchor="end" font-family="${FONT}">sizes in rooms are clear inside the walls</text>`);
+    o.push(`<text x="${ML}" y="20" font-size="14" font-weight="700" fill="${INK}" font-family="${FONT}">${esc(F.name.toUpperCase())}${compact ? ' &#183; ' + esc(ft(W) + ' × ' + ft(D - F.front)) : ''}</text>`);
+    if (!compact) o.push(`<text x="${width - 8}" y="20" font-size="8.5" fill="#8b9099" text-anchor="end" font-family="${FONT}">sizes in rooms are clear inside the walls</text>`);
   }
   if (F.front < 0) {            // the plot line the upper floor projects past
     o.push(line(-1.2, 0, W + 2.2, 0, '#c0392b', 1, 'stroke-dasharray="5 4"'));
-    if (!close) o.push(`<text x="${X(W) + 36}" y="${Y(0) + 3}" font-size="8.5" fill="#c0392b" font-family="${FONT}">plot line</text>`);
+    if (!close && !compact) o.push(`<text x="${X(W) + 36}" y="${Y(0) + 3}" font-size="8.5" fill="#c0392b" font-family="${FONT}">plot line</text>`);
   }
 
   const rooms = F.rooms.map((r, i) => ({ r, i,
@@ -504,7 +525,7 @@ function drawFloor(fi, opt) {
     const vertical = q.w < 4.2 && q.h > q.w * 1.6;
     const rot = vertical ? `transform="rotate(-90 ${cx} ${cy})"` : '';
     const style = `pointer-events="none" ${rot} ${hasFx ? halo : ''} ` + (q.r.under ? 'font-style="italic"' : 'font-weight="600"');
-    const showSize = !tiny && q.r.t !== 'stair';
+    const showSize = !tiny && q.r.t !== 'stair' && !(compact && !close && (small || hasFx));
     const lift = hasFx && !q.r.under ? q.h * S * 0.2 : 0;    // keep bath names clear of the toilets
     o.push(text(cx, cy + lift + (showSize ? -1 : 3) * fs, q.r.n, fz, INK, style));
     if (showSize) {
@@ -528,22 +549,26 @@ function drawFloor(fi, opt) {
   if (!close) {
     const uniq = a => [...new Set(a.map(v => +v.toFixed(3)))].sort((p, q) => p - q);
     const tick = (x, y) => `<line x1="${x - 3}" y1="${y + 3}" x2="${x + 3}" y2="${y - 3}" stroke="${DIM}" stroke-width="1"/>`;
-    const dimtxt = (x, y, s, rot) => `<text x="${x}" y="${y}" font-size="9" fill="${DIM}" text-anchor="middle" ` +
+    const dimtxt = (x, y, s, rot) => `<text x="${x}" y="${y}" font-size="${compact ? 10.5 : 9}" fill="${DIM}" text-anchor="middle" ` +
       `font-family="${FONT}" ${rot ? `transform="rotate(-90 ${x} ${y})"` : ''}>${s}</text>`;
+    if (!compact) {
     const ys = uniq([F.front, D, ...solid.filter(q => q.x + q.w >= W - 0.01).flatMap(q => [q.y, q.y + q.h])]);
     const rx = X(W) + 16;
     o.push(`<line x1="${rx}" y1="${Y(ys[0])}" x2="${rx}" y2="${Y(ys[ys.length - 1])}" stroke="${DIM}" stroke-width="1"/>`);
     ys.forEach((v, k) => { o.push(tick(rx, Y(v)));
       if (k) o.push(dimtxt(rx + 12, (Y(v) + Y(ys[k - 1])) / 2 + 3, esc(ft(v - ys[k - 1])), true)); });
+    }
     const by = Y(F.front) + 42;
     const xs = uniq([0, W, ...solid.filter(q => q.y <= F.front + 0.01).flatMap(q => [q.x, q.x + q.w])]);
     o.push(`<line x1="${X(xs[0])}" y1="${by}" x2="${X(xs[xs.length - 1])}" y2="${by}" stroke="${DIM}" stroke-width="1"/>`);
     xs.forEach((v, k) => { o.push(tick(X(v), by));
       if (k) o.push(dimtxt((X(v) + X(xs[k - 1])) / 2, by - 4, esc(ft(v - xs[k - 1])))); });
+    if (!compact) {
     const lx = X(0) - 18;
     o.push(`<line x1="${lx}" y1="${Y(D)}" x2="${lx}" y2="${Y(F.front)}" stroke="${DIM}" stroke-width="1"/>`);
     o.push(tick(lx, Y(D)) + tick(lx, Y(F.front)));
     o.push(dimtxt(lx - 6, (Y(D) + Y(F.front)) / 2, esc(ft(D - F.front)) + ' overall', true));
+    }
     o.push(dimtxt((X(0) + X(W)) / 2, by + 14, esc(ft(W)) + ' overall'));
     o.push(`<text x="${(X(0) + X(W)) / 2}" y="${by + 28}" font-size="9.5" fill="#8b9099" text-anchor="middle" letter-spacing="2" ` +
            `font-family="${FONT}">STREET &#183; ${PLAN.plot.lane} FT LANE</text>`);
@@ -595,7 +620,8 @@ function renderRoom() {
   return `<div class="sheet wide"><div class="detail">` +
     `<div class="pic">${svg}</div>` +
     `<div class="facts"><h2>${esc(r.n)}</h2><div class="where">${esc(F.name)}` +
-      (r.under ? ' · under the stair' : '') + `</div><table>` +
+      (r.under ? ' · under the stair' : '') + `</div>` +
+      `<p style="margin:0 0 10px"><button class="btn" id="back">Back to the floor plan</button></p><table>` +
       row('Clear size', `<b>${esc(ft(c.w))} × ${esc(ft(c.h))}</b> &nbsp;(${Math.round(c.w * c.h)} sq ft)`) +
       row('To wall centres', `${esc(ft(b.x1 - b.x0))} × ${esc(ft(b.y1 - b.y0))}`) +
       row('Height', esc(info.ceil)) +
@@ -674,9 +700,14 @@ function render() {
     d.innerHTML = renderRoom();
   } else {
     const list = view === 'both' ? PLAN.floors.map((_, i) => i) : [view];
-    d.innerHTML = list.map(i => `<div class="sheet">${drawFloor(i)}</div>`).join('');
+    d.innerHTML = list.map(i => `<div class="sheet">${drawFloor(i)}` +
+      (compact ? '<p class="hint" style="text-align:center;margin:4px 0 6px">Tap a room to see its sizes and details.</p>' : '') + `</div>`).join('');
   }
-  const vs = [['both', 'Both floors'], ...PLAN.floors.map((f, i) => [i, f.name]), ['room', 'Room details'], ['elev', 'Elevation']];
+  /* shorter tab names on a phone so all five fit on one row */
+  const vs = compact
+    ? [['both', 'Both'], ...PLAN.floors.map((f, i) => [i, f.name.split(' ')[0]]), ['room', 'Rooms'], ['elev', 'Elevation']]
+    : [['both', 'Both floors'], ...PLAN.floors.map((f, i) => [i, f.name]), ['room', 'Room details'], ['elev', 'Elevation']];
+  $('png').textContent = compact ? 'Save picture' : 'Save as picture (PNG)';
   $('views').innerHTML = vs.map(([v, l]) => `<button data-v="${v}" class="${String(v) === String(view) ? 'on' : ''}">${esc(l)}</button>`).join('');
   $('rooms').innerHTML = PLAN.floors.map((F, fi) =>
     `<h3>${esc(F.name)}</h3><div class="list">` + F.rooms.map((r, i) =>
@@ -688,7 +719,9 @@ function openRoom(f, i) { selF = f; selR = i; view = 'room'; render(); window.sc
 $('views').onclick = e => { const b = e.target.closest('button'); if (!b) return;
   const v = b.dataset.v; view = (v === 'both' || v === 'elev' || v === 'room') ? v : +v; render(); };
 $('rooms').onclick = e => { const b = e.target.closest('button'); if (b) openRoom(+b.dataset.f, +b.dataset.i); };
-$('draw').onclick = e => { const t = e.target.closest('[data-i]'); if (t) openRoom(+t.dataset.f, +t.dataset.i); };
+$('draw').onclick = e => {
+  if (e.target.id === 'back') { view = selF; render(); window.scrollTo(0, 0); return; }
+  const t = e.target.closest('[data-i]'); if (t) openRoom(+t.dataset.f, +t.dataset.i); };
 
 /* save what is on screen as PNG, one file per drawing */
 $('png').onclick = () => {
@@ -712,6 +745,10 @@ $('png').onclick = () => {
 
 $('sub').textContent = `${PLAN.plot.w} × ${PLAN.plot.d} ft · ground + 1`;
 $('notes').innerHTML = PLAN.notes.map(n => `<li>${esc(n)}</li>`).join('');
+const phone = matchMedia('(max-width: 640px)');
+setCompact(phone.matches);
+if (compact) view = 0;                    // one floor at a time on a phone
+addEventListener('resize', () => { if (phone.matches !== compact) { setCompact(phone.matches); render(); } });
 renderSum();
 render();
 </script>
